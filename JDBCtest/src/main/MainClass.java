@@ -4,7 +4,7 @@ import java.util.List;
 
 import db.jdbcConnect;
 import dto.Student;
-
+//jdbctest하기
 public class MainClass {
 
 	public static void main(String[] args) {
