@@ -22,7 +22,7 @@ MemberDto mem = (MemberDto)obj;
 int seq=Integer.parseInt(request.getParameter("seq"));
 
 //부모글의 내용
-BbsDto bbs=BbsDao.getInstance().getBbsDetail(seq);
+BbsDto bbs=BbsDao.getInstance().getBbs(seq);
 %>
 <!DOCTYPE html>
 <html>

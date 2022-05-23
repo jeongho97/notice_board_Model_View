@@ -108,7 +108,7 @@ if(list == null || list.size() == 0){
 	<%
 }else{
 	for(int i = 0;i < list.size(); i++){
-		BbsDto bbs = list.get(i);
+			BbsDto bbs = list.get(i);
 	%>
 		<tr>
 			<th><%=i + 1 %></th>
@@ -123,12 +123,17 @@ if(list == null || list.size() == 0){
 				%>
 					<a href="bbsdetail.jsp?seq=<%=bbs.getSeq() %>">
 					<%=bbs.getTitle() %>
+						</a>
+					</td>
+
 				<%
 					}
 				%>
 				</a>
 			</td>
-			<td><%=bbs.getId() %></td>		
+			<td>
+				<%=bbs.getId() %>
+			</td>		
 		</tr>
 	<%
 	}
@@ -186,7 +191,6 @@ function searchBtn() {
 		return;
 	}
 	*/
-	
 	location.href = "bbslist.jsp?choice=" + choice + "&search=" + search;
 			
 }

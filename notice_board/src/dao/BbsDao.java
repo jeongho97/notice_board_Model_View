@@ -100,31 +100,26 @@ public class BbsDao {
 		return count>0?true:false;
 		
 	}
-	public BbsDto getBbsDetail(int seq){
+	public BbsDto getBbs(int seq){
 		String sql=" SELECT SEQ, ID, REF, STEP, DEPTH, "
 				+"          TITLE, CONTENT, WDATE, DEL, READCOUNT "
 				+"       FROM BBS "
 				+"       WHERE SEQ=?";
-		String sql2="UPDATE BBS SET READCOUNT=? WHERE SEQ=?";
 		
 		Connection conn=null;
 		PreparedStatement psmt=null;
-		PreparedStatement psmt2=null;
 		ResultSet rs=null;
 		
 		BbsDto bbs=null;
 		
-		conn=DBConnection.getConnection();
-		System.out.println("1/4 BbsDetail success");
-		System.out.println("1/3 readCount success");
 		try {
+			conn=DBConnection.getConnection();
+			System.out.println("1/4 BbsDetail success");
 			psmt=conn.prepareStatement(sql);
 			System.out.println("2/4 BbsDetail success");
 			psmt.setInt(1,seq);
 			rs=psmt.executeQuery();
 			System.out.println("3/4 BbsDetail success");
-			
-			
 			
 			int n=1;
 			if(rs.next()) {
@@ -139,12 +134,6 @@ public class BbsDao {
 						rs.getInt(n++),
 						rs.getInt(n++));
 			}
-			psmt2=conn.prepareStatement(sql2);
-			System.out.println("2/3 readCount success");
-			psmt2.setInt(1, bbs.getReadcount()+1);
-			psmt2.setInt(2, seq);
-			psmt2.executeUpdate();
-			System.out.println("3/3 readCount success");
 			System.out.println("4/4 BbsDetail success");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -155,6 +144,30 @@ public class BbsDao {
 		}
 		return bbs;
 		
+	}
+	public void readount(int seq) {
+		String sql=" UPDATE BBS "
+				 + " SET READCOUNT=READCOUNT+1 "
+				 + " WHERE SEQ=? ";
+		
+		Connection conn=null;
+		PreparedStatement psmt=null;
+		
+		try {
+			conn=DBConnection.getConnection();
+			System.out.println("1/3 readCount success");
+			psmt=conn.prepareStatement(sql);
+			System.out.println("2/3 readCount success");
+			psmt.setInt(1, seq);
+			psmt.execute();
+			System.out.println("3/3 readCount success");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			System.out.println("readount fail");
+			e.printStackTrace();
+		} finally {
+			DBClose.close(conn, psmt, null);
+		}
 	}
 	
 	//댓글				//부모글의 번호, 새로운 댓글
@@ -298,15 +311,15 @@ public class BbsDao {
 				+ " FROM "
 				+ "	(SELECT ROW_NUMBER()OVER(ORDER BY REF DESC, STEP ASC) AS RNUM, "
 				+ "		SEQ, ID, REF, STEP, DEPTH, TITLE, CONTENT, WDATE, DEL, READCOUNT "
-				+ "	FROM BBS ";
+				+ "	FROM BBS "; //검색했을때만 select가 안되게 조건절을 넣어주자
 		
 		String sWord = "";
-		if(choice.equals("title")) {
-			sWord = "  WHERE TITLE LIKE '%" + search + "%' ";
+		if(choice.equals("title") & !search.equals("")) {
+			sWord = "  WHERE DEL=0 AND TITLE LIKE '%" + search + "%' ";
 		}else if(choice.equals("content")) {
-			sWord = "  WHERE CONTENT LIKE '%" + search + "%' ";
+			sWord = "  WHERE DEL=0 AND CONTENT LIKE '%" + search + "%' ";
 		}else if(choice.equals("writer")) {
-			sWord = "  WHERE ID='" + search + "' ";
+			sWord = "  WHERE DEL=0 AND ID='" + search + "' ";
 		}
 		sql = sql + sWord;
 		

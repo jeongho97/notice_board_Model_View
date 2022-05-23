@@ -23,7 +23,8 @@ MemberDto mem = (MemberDto)obj;
 %>
 <%
 BbsDao dao=BbsDao.getInstance();
-BbsDto dto = dao.getBbsDetail(seq);
+dao.readount(seq);
+BbsDto dto = dao.getBbs(seq);
 
 
 
